@@ -151,7 +151,7 @@ def figure_plugin(md: MarkdownIt) -> None:
     ):
         token = tokens[idx]
         id_tag = ' id="figure-' + token.meta["id"] + '"' if token.meta.get("id") else ""
-        return f'<figure{id_tag}><img{self.renderAttrs(token)}"/><figcaption>{token.content}</figcaption></figure>'
+        return f'<figure{id_tag}><img{self.renderAttrs(token)}/><figcaption>{token.content}</figcaption></figure>'
 
         raise NotImplementedError()
 
