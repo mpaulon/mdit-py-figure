@@ -1,0 +1,18 @@
+[project]
+name = "mdit_py_figure"
+description = "figure plugin for markdown-it-py"
+authors = [{ "name" = "Michaël PAULON", "email" = "michael@paulon.org" }]
+readme = "README.md"
+license = { file = "LICENSE" }
+dynamic = ["version", "dependencies"]
+
+[tool.hatch.version]
+path = "mdit_py_figure/__version__.py"
+
+[tool.hatch.metadata.hooks.requirements_txt]
+files = ["requirements.txt"]
+dev = ["requirements-dev.txt"]
+
+[build-system]
+requires = ["hatchling", "hatch-requirements-txt"]
+build-backend = "hatchling.build"
