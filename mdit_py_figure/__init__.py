@@ -129,12 +129,10 @@ def figure_plugin(md: MarkdownIt) -> None:
             content = state.src[labelStart:labelEnd]  # caption
 
             tokens: list[Token] = []
-            state.md.inline.parse(content, state.md, state.env, tokens)  # parse caption
-
+            tokens = state.md.inline.parse(content, state.md, state.env, tokens)  # parse caption
             token = state.push("figure", "fig", 0)
             token.attrs = {"src": href}
             token.children = tokens or None
-            token.content = content
 
             if alt is not None:
                 token.attrSet("alt", alt)
@@ -150,8 +148,14 @@ def figure_plugin(md: MarkdownIt) -> None:
         self, tokens: Sequence[Token], idx: int, options: OptionsDict, env: EnvType
     ):
         token = tokens[idx]
+
+        if token.children:
+            caption = self.renderInline(token.children, options, env)
+        else:
+            caption = ""
+
         id_tag = ' id="figure-' + token.meta["id"] + '"' if token.meta.get("id") else ""
-        return f'<figure{id_tag}><img{self.renderAttrs(token)}/><figcaption>{token.content}</figcaption></figure>'
+        return f'<figure{id_tag}><img{self.renderAttrs(token)}/><figcaption>{caption}</figcaption></figure>'
 
         raise NotImplementedError()
 
