@@ -2,18 +2,13 @@
 
 from __future__ import annotations
 
-import re
 from string import digits
-from typing import TYPE_CHECKING, List, Optional, Sequence
+from typing import TYPE_CHECKING, Sequence
 
 from markdown_it import MarkdownIt
-from markdown_it.common.utils import isStrSpace, normalizeReference
-from markdown_it.rules_block import StateBlock
-from markdown_it.rules_core import StateCore
+from markdown_it.common.utils import isStrSpace
 from markdown_it.rules_inline import StateInline
 from markdown_it.token import Token
-
-from mdit_py_plugins.utils import is_code_block
 
 if TYPE_CHECKING:
     from markdown_it.renderer import RendererProtocol
@@ -129,7 +124,9 @@ def figure_plugin(md: MarkdownIt) -> None:
             content = state.src[labelStart:labelEnd]  # caption
 
             tokens: list[Token] = []
-            tokens = state.md.inline.parse(content, state.md, state.env, tokens)  # parse caption
+            tokens = state.md.inline.parse(
+                content, state.md, state.env, tokens
+            )  # parse caption
             token = state.push("figure", "fig", 0)
             token.attrs = {"src": href}
             token.children = tokens or None
@@ -145,7 +142,11 @@ def figure_plugin(md: MarkdownIt) -> None:
         return True
 
     def render_figure(
-        self, tokens: Sequence[Token], idx: int, options: OptionsDict, env: EnvType
+        self: RendererProtocol,
+        tokens: Sequence[Token],
+        idx: int,
+        options: OptionsDict,
+        env: EnvType,
     ):
         token = tokens[idx]
 
@@ -155,9 +156,7 @@ def figure_plugin(md: MarkdownIt) -> None:
             caption = ""
 
         id_tag = ' id="figure-' + token.meta["id"] + '"' if token.meta.get("id") else ""
-        return f'<figure{id_tag}><img{self.renderAttrs(token)}/><figcaption>{caption}</figcaption></figure>'
-
-        raise NotImplementedError()
+        return f"<figure{id_tag}><img{self.renderAttrs(token)}/><figcaption>{caption}</figcaption></figure>"
 
     md.inline.ruler.before(
         "link", "figure_def", parse_figure, {"alt": ["paragraph", "reference"]}
